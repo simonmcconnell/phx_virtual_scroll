@@ -16,9 +16,10 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import topbar from "topbar";
 import { LiveSocket } from "phoenix_live_view";
+import VirtualScroll from "./virtual_scroll";
 
 const hooks = {
-  
+  VirtualScroll: VirtualScroll,
 };
 
 let csrfToken = document
