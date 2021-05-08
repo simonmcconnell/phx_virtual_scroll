@@ -1,20 +1,20 @@
-defmodule PhxVirtualScrollWeb.AlipineLive do
+defmodule PhxVirtualScrollWeb.AlpineLive do
   use PhxVirtualScrollWeb, :live_view
   alias PhxVirtualScroll.Event
 
   @impl true
   def mount(_params, _session, socket) do
 
-    visible_item_count = 100
+    page_size = 100
 
-    events = Event.on_day_in_question() |> Event.limit(visible_item_count) |> Event.get()
+    events = Event.on_day_in_question() |> Event.limit(page_size) |> Event.get()
 
     url = PhxVirtualScrollWeb.Router.Helpers.url(socket) <> "/api/events/page"
 
     {:ok,
      assign(socket,
        url: url,
-       visible_item_count: visible_item_count,
+       page_size: page_size,
        events: events,
        fields: [:event_time, :label, :cheese, :colour, :aspect, :when, :weight, :severity]
      )}
@@ -36,12 +36,16 @@ defmodule PhxVirtualScrollWeb.AlipineLive do
           <!-- bottom section -->
           <div class="flex-grow overflow-x-auto overflow-y-hidden">
             <!-- table -->
-            <div class="table w-full divide-y divide-gray-200">
-              <div class="table-header-group bg-gray-50">
-                <%= render_table_header(fields: @fields) %>
-              </div>
-              <div class="table-row-group divide-y divide-gray-100">
-                <%= render_rows(events: @events, fields: @fields) %>
+            <div id="alpine-territory"
+              x-data="{ page: 1, pageSize: <%= @page_size %>, url: '<%= @url %>' }"
+              x-init="$get(url + '/' + page + '/' + pageSize).then(data => console.log(data))">
+              <div class="table w-full divide-y divide-gray-200">
+                <div class="table-header-group bg-gray-50">
+                  <%= render_table_header(fields: @fields) %>
+                </div>
+                <div class="table-row-group divide-y divide-gray-100">
+                  <%= render_rows(events: @events, fields: @fields) %>
+                </div>
               </div>
             </div>
           </div>
