@@ -18,6 +18,7 @@ defmodule PhxVirtualScrollWeb.Router do
     pipe_through :browser
 
     live "/", PageLive, :index
+    live "/eg", StaticListLive, :index
   end
 
   # Other scopes may use custom stacks.

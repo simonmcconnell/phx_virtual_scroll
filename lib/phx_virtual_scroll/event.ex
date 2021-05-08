@@ -13,8 +13,6 @@ defmodule PhxVirtualScroll.Event do
     field :when, :string
     field :weight, :integer
     field :severity, :integer
-
-    timestamps()
   end
 
   @fields [
@@ -40,11 +38,14 @@ defmodule PhxVirtualScroll.Event do
     |> validate_required(@required_fields)
   end
 
+  def get(query) do
+    Repo.all(query)
+  end
+
   def base, do: from(q in __MODULE__, order_by: [asc: q.event_time])
 
-  def get_some(query \\ base()) do
-    from q in query,
-      limit: 100
+  def limit(query \\ base(), limit) do
+    from q in query, limit: ^limit
   end
 
   def on_day_in_question(query \\ base()) do
