@@ -16,7 +16,18 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import topbar from "topbar";
 import { LiveSocket } from "phoenix_live_view";
+import "alpine-magic-helpers";
+import "alpinejs";
 import HyperlistLivebook from "./hyperlist_livebook";
+
+// LiveSocket
+const dom = {
+  onBeforeElUpdated(from, to) {
+    if (from.__x) {
+      window.Alpine.clone(from.__x, to);
+    }
+  },
+};
 
 const hooks = {
   HyperlistLivebook: HyperlistLivebook,
@@ -25,9 +36,11 @@ const hooks = {
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
+  
 let liveSocket = new LiveSocket("/live", Socket, {
-  params: { _csrf_token: csrfToken },
+  dom: dom,
   hooks: hooks,
+  params: { _csrf_token: csrfToken },
 });
 
 // Show progress bar on live navigation and form submits
