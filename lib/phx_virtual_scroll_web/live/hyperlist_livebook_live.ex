@@ -21,8 +21,8 @@ defmodule PhxVirtualScrollWeb.HyperlistLivebookLive do
     ~L"""
     <div class="h-screen w-screen overflow-hidden bg-white">
       <div class="relative w-full h-full">
-
         <div class="flex flex-col h-full">
+
           <!-- top section -->
           <div class="h-24 bg-gray-100 flex-none">
             <div class="h-12 bg-gray-300">Events</div>
@@ -32,29 +32,26 @@ defmodule PhxVirtualScrollWeb.HyperlistLivebookLive do
           <!-- bottom section -->
           <div class="flex-grow overflow-x-auto overflow-y-hidden">
             <!-- table -->
-            <div id="hyperlist" phx-hook="HyperlistLivebook" data-max-height="300" data-follow="true">
-
-              <!-- hidden rows -->
-              <div data-template class="hidden">
-                <%= for event <- @events do %>
-                  <div id="event-<%= event.id %>" class="table-row bg-white hover:bg-gray-50">
-                    <%= for field <- @fields do %>
-                      <div class="table-cell px-6 py-2 whitespace-nowrap text-sm text-gray-500">
-                        <%= Map.get(event, field) %>
-                      </div>
-                    <% end %>
-                  </div>
-                <% end %>
-              </div>
-                <div class="table w-full divide-y divide-gray-200 relative">
-                  <div class="table-header-group bg-gray-50">
-                    <%= render_table_header(fields: @fields) %>
-                  </div>
-                  <!-- rows rendered here -->
-                  <div data-content phx-update="ignore" class="relative table-row-group divide-y divide-gray-100 overflow-auto">
-                  </div>
-              </div>
-
+            <div id="hyperlist" phx-hook="HyperlistLivebook" data-max-height="300" data-follow="false">
+              <table class="w-full divide-y divide-gray-200 relative">
+                <thead class="bg-gray-50">
+                  <%= render_table_header(fields: @fields) %>
+                </thead>
+                <!-- hidden rows -->
+                <tbody data-template class="hidden">
+                  <%= for event <- @events do %>
+                    <tr id="event-<%= event.id %>" class="bg-white hover:bg-gray-50">
+                      <%= for field <- @fields do %>
+                        <!-- <div class="px-6 py-2 whitespace-nowrap text-sm text-gray-500"> -->
+                          <%= Map.get(event, field) %>
+                        <!-- </div> -->
+                      <% end %>
+                    </tr>
+                  <% end %>
+                </tbody>
+                <!-- rows rendered here -->
+                <tbody data-content phx-update="ignore" class="overflow-auto divide-y divide-gray-100"></tbody>
+              </table>
             </div>
           </div>
 
@@ -68,15 +65,15 @@ defmodule PhxVirtualScrollWeb.HyperlistLivebookLive do
     assigns = Enum.into(assigns, %{})
 
     ~L"""
-    <div class="table-row h-12">
+    <tr class="h-12">
       <%= for field <- @fields do %>
-        <div class="table-cell px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+        <td class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
           <div class="flex items-center">
             <%= Atom.to_string(field) %>
           </div>
-        </div>
+        </td>
       <% end %>
-    </div>
+    </tr>
     """
   end
 end
