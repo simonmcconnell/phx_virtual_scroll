@@ -57,8 +57,8 @@ defmodule PhxVirtualScroll.Event do
       order_by: [asc: q.event_time]
   end
 
-  def get_page(query \\ base(), page: page, per_page: per_page) do
-    Repo.all(from a in query, offset: ^(page * per_page), limit: ^per_page)
+  def get_page(query \\ base(), page, page_size) do
+    Repo.all(from a in query, offset: ^(page * page_size), limit: ^page_size)
   end
 
   def count(query \\ base()) do
