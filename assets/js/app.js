@@ -19,6 +19,7 @@ import { LiveSocket } from "phoenix_live_view";
 import "alpine-magic-helpers";
 import "alpinejs";
 import HyperlistLivebook from "./hyperlist_livebook";
+import HandRolled from "./handRolled"
 
 // LiveSocket
 const dom = {
@@ -31,6 +32,7 @@ const dom = {
 
 const hooks = {
   HyperlistLivebook: HyperlistLivebook,
+  HandRolled: HandRolled,
 };
 
 let csrfToken = document

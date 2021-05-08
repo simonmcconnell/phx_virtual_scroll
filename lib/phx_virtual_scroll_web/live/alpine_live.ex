@@ -22,12 +22,36 @@ defmodule PhxVirtualScrollWeb.AlpineLive do
   @impl true
   def render(assigns) do
     ~L"""
-    <div class="h-screen w-screen overflow-hidden bg-white">
+    <div id="eventstable"
+      x-data="{
+        setTableRowsHeight() {
+          console.log('setting height of rows section');
+          console.log(this.$refs.rows.style);
+          const win = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+          const top = this.$refs.top.getBoundingClientRect().height;
+          const hdr = this.$refs.hdr.getBoundingClientRect().height;
+          console.log(win, top, hdr);
+          return win - top - hdr;
+          //this.$refs.rows.style.height = '20px';
+        },
+        events: [],
+        page: 1,
+        fields: <%= list_to_string(@fields) %>,
+        pageSize: <%= @page_size %>,
+        url: '<%= @url %>' }"
+      x-init="
+        $get(url + '/' + page + '/' + pageSize)
+          .then(data => {
+            console.log(data);
+            events = data.data; });
+        rowStyle = 'height: ' + setTableRowsHeight() + 'px'"
+      x-on:resize.window="console.log('window resized'); rowStyle = 'height: ' + setTableRowsHeight() + 'px';"
+      class="h-screen w-screen overflow-hidden bg-white">
       <div class="relative w-full h-full">
-
         <div class="flex flex-col h-full">
+
           <!-- top section -->
-          <div class="h-24 bg-gray-100 flex-none">
+          <div x-ref="top" id="top-section" class="h-24 bg-gray-100 flex-none">
             <div class="h-12 bg-gray-300">Events</div>
             <div class="h-12 bg-gray-200">...</div>
           </div>
@@ -35,20 +59,12 @@ defmodule PhxVirtualScrollWeb.AlpineLive do
           <!-- bottom section -->
           <div class="flex-grow overflow-x-auto overflow-y-hidden">
             <!-- table -->
-            <div id="alpine-territory"
-              x-data="{ events: [], page: 1, fields: <%= list_to_string(@fields) %>, pageSize: <%= @page_size %>, url: '<%= @url %>' }"
-              x-init="
-                $get(url + '/' + page + '/' + pageSize)
-                  .then(data => {
-                    console.log(data);
-                    events = data.data;
-                  }
-                )">
+
               <div class="table w-full divide-y divide-gray-200">
-                <div class="table-header-group bg-gray-50">
+                <div x-ref="hdr" id="table-header" class="table-header-group bg-gray-50">
                   <%= render_table_header(fields: @fields) %>
                 </div>
-                <div class="table-row-group divide-y divide-gray-100">
+                <div phx-update="ignore" x-ref="rows" :style="rowStyle" id="table-rows" class="table-row-group divide-y divide-gray-100 overflow-hidden">
                   <template x-for="(event, index) in events" :key="index">
                     <div id="'event-' + index" class="table-row bg-white hover:bg-gray-50">
                       <template x-for="field in fields" :key="field">
@@ -59,7 +75,6 @@ defmodule PhxVirtualScrollWeb.AlpineLive do
                 </div>
               </div>
             </div>
-          </div>
 
         </div>
       </div>
