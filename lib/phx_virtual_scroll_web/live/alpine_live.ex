@@ -4,7 +4,6 @@ defmodule PhxVirtualScrollWeb.AlpineLive do
 
   @impl true
   def mount(_params, _session, socket) do
-
     page_size = 100
 
     events = Event.on_day_in_question() |> Event.limit(page_size) |> Event.get()
@@ -37,14 +36,26 @@ defmodule PhxVirtualScrollWeb.AlpineLive do
           <div class="flex-grow overflow-x-auto overflow-y-hidden">
             <!-- table -->
             <div id="alpine-territory"
-              x-data="{ page: 1, pageSize: <%= @page_size %>, url: '<%= @url %>' }"
-              x-init="$get(url + '/' + page + '/' + pageSize).then(data => console.log(data))">
+              x-data="{ events: [], page: 1, fields: <%= list_to_string(@fields) %>, pageSize: <%= @page_size %>, url: '<%= @url %>' }"
+              x-init="
+                $get(url + '/' + page + '/' + pageSize)
+                  .then(data => {
+                    console.log(data);
+                    events = data.data;
+                  }
+                )">
               <div class="table w-full divide-y divide-gray-200">
                 <div class="table-header-group bg-gray-50">
                   <%= render_table_header(fields: @fields) %>
                 </div>
                 <div class="table-row-group divide-y divide-gray-100">
-                  <%= render_rows(events: @events, fields: @fields) %>
+                  <template x-for="(event, index) in events" :key="index">
+                    <div id="'event-' + index" class="table-row bg-white hover:bg-gray-50">
+                      <template x-for="field in fields" :key="field">
+                        <div x-text="event[field]" class="table-cell px-6 py-2 whitespace-nowrap text-sm text-gray-500"></div>
+                      </template>
+                    </div>
+                  </template>
                 </div>
               </div>
             </div>
@@ -86,5 +97,11 @@ defmodule PhxVirtualScrollWeb.AlpineLive do
       </div>
     <% end %>
     """
+  end
+
+  defp list_to_string(list) do
+    Enum.reduce(list, "[", fn x, acc ->
+      acc <> "'#{x}', "
+    end) <> "]"
   end
 end
