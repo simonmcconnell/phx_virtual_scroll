@@ -2,7 +2,6 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@import "./phoenix.css";
 @import "./phoenix_live_view.css";
 
 @import "./components.css";
