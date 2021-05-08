@@ -42,7 +42,7 @@ defmodule PhxVirtualScroll.Event do
     Repo.all(query)
   end
 
-  def base, do: from(q in __MODULE__, order_by: [asc: q.event_time])
+  def base, do: __MODULE__
 
   def limit(query \\ base(), limit) do
     from q in query, limit: ^limit
@@ -53,8 +53,12 @@ defmodule PhxVirtualScroll.Event do
     finish = ~U[1984-01-03T00:00:00.000000Z]
 
     from q in query,
-      where: q.event_time > ^start and q.event_time < ^finish,
-      order_by: [asc: q.event_time]
+      where: q.event_time > ^start and q.event_time < ^finish
+  end
+
+  def order_by_event_time(query \\ base(), dir \\ :asc) when dir in [:asc, :desc] do
+    from q in query,
+      order_by: [{^dir, q.event_time}]
   end
 
   def get_page(query \\ base(), page, page_size) do

@@ -26,45 +26,50 @@ import { getLineHeight } from "./lib/utils";
  */
 const HyperlistLivebook = {
   mounted() {
+    console.log('mounted')
     this.props = getProps(this);
     this.state = {
-      lineHeight: null,
-      templateElement: null,
+      // lineHeight: null,
+      // templateElement: null,
       contentElement: null,
       virtualizedList: null,
+      page: 1,
     };
 
-    this.state.lineHeight = getLineHeight(this.el);
+    // this.state.lineHeight = getLineHeight(this.el);
 
-    this.state.templateElement = this.el.querySelector("[data-template]");
+    // this.state.templateElement = this.el.querySelector("[data-template]");
 
-    if (!this.state.templateElement) {
-      throw new Error(
-        "VirtualizedLines must have a child with data-template attribute"
-      );
-    }
+    // if (!this.state.templateElement) {
+    //   throw new Error(
+    //     "VirtualizedLines must have a child with data-template attribute"
+    //   );
+    // }
 
     this.state.contentElement = this.el.querySelector("[data-content]");
 
-    if (!this.state.templateElement) {
-      throw new Error("VirtualizedLines must have a child with data-content");
-    }
+    // if (!this.state.templateElement) {
+    //   throw new Error("VirtualizedLines must have a child with data-content");
+    // }
 
     const config = hyperListConfig(
-      this.state.templateElement,
+      // this.state.templateElement,
       this.props.maxHeight,
-      this.state.lineHeight
+      this.props.lineHeight,
+      this.props.total,
     );
     this.virtualizedList = new HyperList(this.state.contentElement, config);
   },
 
   updated() {
+    console.log('updated');
     this.props = getProps(this);
 
     const config = hyperListConfig(
-      this.state.templateElement,
+      // this.state.templateElement,
       this.props.maxHeight,
-      this.state.lineHeight
+      this.props.lineHeight,
+      this.props.total,
     );
 
     const scrollTop = Math.round(this.state.contentElement.scrollTop);
@@ -82,16 +87,22 @@ const HyperlistLivebook = {
   },
 };
 
-function hyperListConfig(templateElement, maxHeight, lineHeight) {
-  const numberOfLines = templateElement.childElementCount;
+function hyperListConfig(
+  // templateElement, 
+  maxHeight, lineHeight, total) {
+  // const numberOfLines = templateElement.childElementCount;
+  //  const numberOfLines = 100;
 
   return {
-    height: Math.min(maxHeight, lineHeight * numberOfLines),
-    total: numberOfLines,
+    height: Math.min(maxHeight, lineHeight * total),
+    total: total,
     itemHeight: lineHeight,
     generate: (index) => {
+      console.log('generate', index)
       // Clone n-th child of the template container.
-      return templateElement.children.item(index).cloneNode(true);
+      const el = document.createElement('tr');
+      el.innerHTML = `<td>event time ${index + 1}</td><td>label ${index + 1}</td><td>cheese ${index + 1}</td><td>colour ${index + 1}</td><td>aspect ${index + 1}</td><td>when ${index + 1}</td><td> ${index * 10}</td><td>${index + 1}</td>`;
+      return el;
     },
   };
 }
@@ -99,7 +110,10 @@ function hyperListConfig(templateElement, maxHeight, lineHeight) {
 function getProps(hook) {
   return {
     maxHeight: getAttributeOrThrow(hook.el, "data-max-height", parseInteger),
-    follow: getAttributeOrThrow(hook.el, "data-follow", parseBoolean),
+    follow: false, //getAttributeOrThrow(hook.el, "data-follow", parseBoolean),
+    total:  getAttributeOrThrow(hook.el, "data-total", parseInteger),
+    lineHeight:  getAttributeOrThrow(hook.el, "data-line-height", parseInteger),
+    pageSize:  getAttributeOrThrow(hook.el, "data-page-size", parseInteger),
   };
 }
 
