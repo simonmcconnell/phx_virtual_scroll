@@ -20,13 +20,15 @@ defmodule PhxVirtualScrollWeb.Router do
     live "/", PageLive, :index
     live "/eg", StaticListLive, :index
     live "/alpine", AlpineLive, :index
-    live "/hyperlist/livebook/:limit", HyperlistLivebookLive, :index
+    live "/fattable", FattableLive, :index
+    live "/hyperlist/livebook", HyperlistLivebookLive, :index
   end
 
   scope "/api", PhxVirtualScrollWeb do
     pipe_through :api
 
-    get "/events/page/:page/:page_size", EventController, :get_page
+    get "/events", EventController, :index
+    get "/events/page/:page/page_size/:page_size", EventController, :get_page
 
   end
 

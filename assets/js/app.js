@@ -19,7 +19,8 @@ import { LiveSocket } from "phoenix_live_view";
 import "alpine-magic-helpers";
 import "alpinejs";
 import HyperlistLivebook from "./hyperlist_livebook";
-import HandRolled from "./handRolled"
+import HandRolled from "./handRolled";
+import Fattable from "./fattable";
 
 // LiveSocket
 const dom = {
@@ -33,12 +34,13 @@ const dom = {
 const hooks = {
   HyperlistLivebook: HyperlistLivebook,
   HandRolled: HandRolled,
+  Fattable: Fattable,
 };
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
-  
+
 let liveSocket = new LiveSocket("/live", Socket, {
   dom: dom,
   hooks: hooks,
