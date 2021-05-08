@@ -16,10 +16,10 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import topbar from "topbar";
 import { LiveSocket } from "phoenix_live_view";
-import VirtualScroll1 from "./virtual_scroll1";
+import HyperlistLivebook from "./hyperlist_livebook";
 
 const hooks = {
-  VirtualScroll1: VirtualScroll1,
+  HyperlistLivebook: HyperlistLivebook,
 };
 
 let csrfToken = document

@@ -3,8 +3,8 @@ import {
   getAttributeOrThrow,
   parseBoolean,
   parseInteger,
-} from "../lib/attribute";
-import { getLineHeight } from "../lib/utils";
+} from "./lib/attribute";
+import { getLineHeight } from "./lib/utils";
 
 /**
  * A hook used to render text lines as a virtual list,
@@ -24,7 +24,7 @@ import { getLineHeight } from "../lib/utils";
  *   * one annotated with `data-content` where the visible elements are rendered,
  *     it should contain any styling relevant for the container
  */
-const VirtualScroll = {
+const HyperlistLivebook = {
   mounted() {
     this.props = getProps(this);
     this.state = {
@@ -103,4 +103,4 @@ function getProps(hook) {
   };
 }
 
-export default VirtualScroll;
+export default HyperlistLivebook;

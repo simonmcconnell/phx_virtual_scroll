@@ -19,6 +19,7 @@ defmodule PhxVirtualScrollWeb.Router do
 
     live "/", PageLive, :index
     live "/eg", StaticListLive, :index
+    live "/hyperlist/livebook/:limit", HyperlistLivebookLive, :index
   end
 
   # Other scopes may use custom stacks.
