@@ -8,7 +8,7 @@ defmodule PhxVirtualScrollWeb.AlpineLive do
 
     events = Event.on_day_in_question() |> Event.limit(page_size) |> Event.get()
 
-    url = PhxVirtualScrollWeb.Router.Helpers.url(socket) <> "/api/events/page"
+    url = PhxVirtualScrollWeb.Router.Helpers.url(socket) <> "/api/events/"
 
     {:ok,
      assign(socket,
@@ -40,7 +40,7 @@ defmodule PhxVirtualScrollWeb.AlpineLive do
         pageSize: <%= @page_size %>,
         url: '<%= @url %>' }"
       x-init="
-        $get(url + '/' + page + '/' + pageSize)
+        $get(url + '/page/' + page + '/page_size/' + pageSize)
           .then(data => {
             console.log(data);
             events = data.data; });

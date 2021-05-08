@@ -1,0 +1,7 @@
+<tr class="bg-white hover:bg-gray-50">
+  <%= for field <- @fields do %>
+    <div class="px-6 py-2 whitespace-nowrap text-sm text-gray-500">
+      <%= Map.get(@event, field) %>
+    </div>
+  <% end %>
+</tr>

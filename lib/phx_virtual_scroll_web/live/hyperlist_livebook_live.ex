@@ -3,21 +3,40 @@ defmodule PhxVirtualScrollWeb.HyperlistLivebookLive do
   alias PhxVirtualScroll.Event
 
   @impl true
-  def mount(%{"limit" => limit} = _params, _session, socket) do
+  def mount(_params, _session, socket) do
     # events =
     #   Event.on_day_in_question()
     #   |> Event.limit(page_size)
     #   |> Event.get()
+
     page_size = 100
     total = Event.on_day_in_question() |> Event.count()
+    url = PhxVirtualScrollWeb.Router.Helpers.url(socket)
 
     {:ok,
      assign(socket,
        #  events: events,
        total: total,
        page_size: page_size,
+       url: url,
        fields: [:event_time, :label, :cheese, :colour, :aspect, :when, :weight, :severity]
      )}
+  end
+
+  @impl true
+  def handle_event("load-events", %{"page" => page, "page_size" => page_size} = params, socket) do
+    IO.puts("handling load-events")
+    IO.inspect(params)
+
+    events =
+      Event.on_day_in_question()
+      |> Event.get_page(page, page_size)
+      |> Enum.map(&Map.from_struct/1)
+      |> Enum.map(&Map.drop(&1, [:__meta__]))
+
+    {:noreply,
+     socket
+     |> push_event("receive-events-#{page}", %{events: events})}
   end
 
   @impl true
@@ -27,7 +46,12 @@ defmodule PhxVirtualScrollWeb.HyperlistLivebookLive do
       <div class="w-full h-full">
           <!-- bottom section -->
           <!-- <div class="flex-grow"> -->
-        <div id="hyperlist1" class="h-full w-full" phx-hook="HyperlistLivebook" phx-update="ignore" data-max-height="400" data-line-height="40" data-page-size="<%= @page_size %>" data-total="<%= @total %>">
+        <div id="hyperlist1" class="h-full w-full" phx-hook="HyperlistLivebook" data-url="<%= @url %>" data-max-height="400" data-line-height="40" data-page-size="<%= @page_size %>" data-total="<%= @total %>">
+            <div data-fields class="hidden">
+              <%= for field <- @fields do %>
+                <span data-field="<%= field %>"></span>
+              <% end %>
+            </div>
           <table class="w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <%= render_table_header(fields: @fields) %>
