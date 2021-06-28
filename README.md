@@ -1,3 +1,7 @@
+# Results
+
+Didn't get what I was after (virtual scrolling ~1,000,000 rows) from fattable or hyperlist so I used noUiSlider to create a timeline slider, sacrificing mouse and touch scrolling.  Fattable's method was close and I'll pursue this when time permits.
+
 # PhxVirtualScroll
 
 To start your Phoenix server:
